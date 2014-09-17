@@ -1,0 +1,28 @@
+Author: Chunpai Wang
+Email: cwang64@u.rochester.edu
+CSC254 HWK02 : Tokenizer
+
+This folder contains 3 files:
+1. input_file.c  : c program for tokenization
+2. tokenizer.py : python2.7 script to tokenize the input_file and return a new output_file
+3. README : this file
+
+How to run this program:
+    In terminal:     python tokenizer.py input_file.c
+
+Program Description:
+   This program contain two classes. One is Token and the other is Scanner.
+   Each token in Token class has two attributes, name(token type) and value.
+   Scanner has next_token() function, which is the main part of this program.
+   Check specific comments in the codes.
+
+   Scanner will read a C input file char by char, and detect the valid tokens,
+   such as reversed words, identifiers, numbers, meta_statements, and string. 
+   And then it also adds '_cs254' after each identifers, and write the new program 
+   in the output_file.c
+   Also, this program will print the tokens(name and value) in the console.
+   In addition, it also announces 'ERROR!!!' when detect illegal tokens, 
+   like '2010i', '!', and '/*--' without '*/'. 
+
+
+     

@@ -33,14 +33,7 @@ class Scanner:
         if os.path.getsize(file_name) == 0:
             print 'Empty File!'
     
-    """
-    #peek next character, but not effect the infile position
-    def peek_next(self, size):
-        last_pos   = self.infile.tell()
-        chars = self.infile.read(size)
-        self.infile.seek(last_pos)
-        return chars
-    """
+
     
     # return the next token (as a Token object) or EOF
     # this function will remove the whitespace before see valid characters

@@ -64,8 +64,11 @@ class Scanner:
                         value += next_ch
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1) # go back to last position of char where is reading
-                    if value == 'int' or value == 'if':
-                        token = Token('reserved word',value)
+                    if value == 'int':
+                        token = Token('type_name',value)
+                        return token
+                    elif value == 'if':
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -78,7 +81,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'void':
-                        token = Token('reserved word',value)
+                        token = Token('type_name',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -91,7 +94,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'while':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -104,7 +107,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'return':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -117,7 +120,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'continue':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -130,7 +133,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'break':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -143,7 +146,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'scanf':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -156,7 +159,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'printf':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -169,7 +172,7 @@ class Scanner:
                         next_ch = self.infile.read(1)
                     self.infile.seek(self.infile.tell() -1)
                     if value == 'main':
-                        token = Token('reserved word',value)
+                        token = Token('reserved_words',value)
                         return token
                     else:
                         token = Token('identifier',value)
@@ -229,7 +232,7 @@ class Scanner:
                     token = Token('symbol',ch+next_ch)
                     return token
                 else:
-                    print 'ERROR: illegal token \"!\"'
+                    raise SyntaxError('ERROR: illegal token \"!\"')
             #detect forward slash and meta_statements
             elif ch == '/':
                 value = ch
@@ -241,7 +244,8 @@ class Scanner:
                         value += next_ch
                         next_ch = self.infile.read(1)
                     token = Token('meta_stmt',value)
-                    return token
+                    #return token
+                    return self.next_token()
                 elif next_ch == '*':
                     value += next_ch
                     next_ch = self.infile.read(2)
@@ -253,9 +257,10 @@ class Scanner:
                     if next_ch == '*/':
                         value += next_ch
                         token = Token('meta_stmt',value)
-                        return token
+                        #return token
+                        return self.next_token()
                     else:
-                        print 'ERROR: NOT MATCH OF \"/*\"'
+                        raise SyntaxError('ERROR: NOT MATCH OF \"/*\"')
                 else:
                     self.infile.seek(last_pos)
                     token = Token('symbol','/')
@@ -269,7 +274,9 @@ class Scanner:
                     #print value
                 #print ch
                 token = Token('meta_stmt',value)
-                return token
+                #return token
+                return self.next_token()
+
             #detect string
             elif ch in ['\"','\'']:
                 value = ch
@@ -284,18 +291,19 @@ class Scanner:
                     token = Token('string',value)
                     return token
                 else:
-                    print 'ERROR: illegal quotation mark'
+                    raise SyntaxError('ERROR: illegal quotation mark')
             elif not ch:
-                print('Tokenization Finished !')
+                token = Token('eof','$$')
+                return token
             else:
-                print 'ERROR: illegal token \"'+value+'\"'
+                raise SyntaxError('ERROR: illegal token \"'+value+'\"')
 
 
 if __name__ == "__main__":
     output_file = open('output_file.c','w')
     scanner = Scanner(sys.argv[1])
     token = scanner.next_token()
-    while token != None: # while not END of FILE
+    while token.get_name() != 'eof': # while not END of FILE
         print (token.get_name(),token.get_value())
         if token.get_name() == 'identifier':
             output_file.write(token.get_value()+'_cs254'+' ')

@@ -200,7 +200,7 @@ class Scanner:
                 return token
             elif ch in ['=','&','|']:
                 last_pos = self.infile.tell()
-                next_ch = self.infile.read()
+                next_ch = self.infile.read(1)
                 if next_ch == ch :
                     token = Token('symbol',ch+next_ch)
                     return token
